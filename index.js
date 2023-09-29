@@ -15,7 +15,11 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@bookshe
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverApi: ServerApiVersion.v1,
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
 });
 
 const run = async () => {
@@ -226,17 +230,20 @@ const run = async () => {
         console.error(error);
         res.status(500).json({ message: "Server Error" });
       }
+
     });
+    app.get("/", (req, res) => {
+      res.send("Book-Shelf");
+    });
+    
+    app.listen(port, () => {
+      console.log(`Example app listening on port ${port}`);
+    });
+
   } finally {
   }
 };
 
 run().catch((err) => console.log(err));
 
-app.get("/", (req, res) => {
-  res.send("Book-Shelf");
-});
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
